@@ -48,6 +48,14 @@ function M.open()
   vim.system(vim.list_extend(vim.deepcopy(M.config.open_cmd), { pdf }))
 end
 
+-- Runs install.sh for the current file in a terminal split (sudo needs a tty).
+function M.install()
+  local tex = tex_file()
+  if not tex then return end
+  local root = vim.fs.dirname(vim.fs.dirname(vim.fs.dirname(vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p'))))
+  vim.cmd('split | terminal ' .. vim.fn.shellescape(root .. '/install.sh') .. ' ' .. vim.fn.shellescape(tex))
+end
+
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
 end

@@ -6,13 +6,6 @@ Lua, Neovim 0.10+ (`vim.system`), any TeX engine on `$PATH`.
 
 ## Setup
 
-Requires a TeX distribution. On macOS:
-
-```
-brew install --cask basictex
-eval "$(/usr/libexec/path_helper)"
-```
-
 With lazy.nvim:
 
 ```lua
@@ -29,18 +22,30 @@ opts = {
 }
 ```
 
+Then open any `.tex` file and run `:TexInstall`. It opens a terminal split and runs `install.sh`, which installs BasicTeX through Homebrew if there is no `pdflatex`, then installs every package the file uses that the distribution lacks. It asks for a password because TeX Live installs system-wide. The same script runs from a shell:
+
+```
+./install.sh            # BasicTeX plus common document packages
+./install.sh resume.tex # only what this file needs
+```
+
+BasicTeX is deliberately small (about 100 MB), so a new document can hit a missing package. If compiling fails with `File 'x.sty' not found`, run `:TexInstall` again.
+
 ## Usage
 
 In a `.tex` buffer:
 
-| Key          | Command       | Effect                                   |
-| ------------ | ------------- | ---------------------------------------- |
-| `<leader>lc` | `:TexCompile` | Save and compile                         |
-| `<leader>lo` | `:TexOpen`    | Open the PDF, compiling first if missing |
+| Key          | Command       | Effect                                       |
+| ------------ | ------------- | -------------------------------------------- |
+| `<leader>lc` | `:TexCompile` | Save and compile                             |
+| `<leader>lo` | `:TexOpen`    | Open the PDF, compiling first if missing     |
+|              | `:TexInstall` | Install TeX and the packages this file needs |
 
 ## How it works
 
 `compile` runs the engine asynchronously with `vim.system` in the file's directory, so the editor stays responsive. The `-file-line-error` flag makes pdflatex print errors as `file:line: message`, which is parsed with a two-rule errorformat: one to capture those lines, one to discard everything else. A successful build clears and closes quickfix; a failed one opens it.
+
+`install.sh` reads every `\usepackage` from the file, checks each with `kpsewhich`, and maps the missing `.sty` files to TeX Live package names with `tlmgr search --file`, since the two often differ (`fullpage.sty` lives in `preprint`).
 
 A single `running` flag prevents overlapping builds, which also stops `on_save` from double-compiling when a manual compile triggers a write.
 

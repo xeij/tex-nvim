@@ -2,6 +2,7 @@ local function tex() return require('tex') end
 
 vim.api.nvim_create_user_command('TexCompile', function() tex().compile() end, {})
 vim.api.nvim_create_user_command('TexOpen', function() tex().open() end, {})
+vim.api.nvim_create_user_command('TexInstall', function() tex().install() end, {})
 
 local group = vim.api.nvim_create_augroup('tex.nvim', { clear = true })
 
