@@ -9,10 +9,10 @@ Lua, Neovim 0.10 or newer, any TeX engine on `$PATH`. The installer uses Homebre
 With lazy.nvim, add the plugin spec and restart Neovim:
 
 ```lua
-{ 'OWNER/tex.nvim', ft = 'tex', opts = {} }
+{ 'xeij/tex-nvim', ft = 'tex', opts = {} }
 ```
 
-Replace `OWNER` with the GitHub account hosting the repository. For a local clone, use `dir = '/path/to/tex.nvim'` instead of the first string.
+For a local clone, use `dir = '/path/to/tex.nvim'` instead of the first string.
 
 Options and their defaults:
 
